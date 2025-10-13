@@ -1,46 +1,49 @@
 package com.backend.mediassist.controller;
+
+import com.backend.mediassist.model.LoginResponse;
 import com.backend.mediassist.model.User;
 import com.backend.mediassist.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Optional;
-
 @RestController
-@RequestMapping("/users")
+@RequestMapping("/api/users")
 public class UserController {
+    
     @Autowired
     private UserService userService;
-
+    
+    // Register new user
     @PostMapping("/register")
-    public ResponseEntity<User> registerUser(@RequestBody User user) {
-        if (userService.userExists(user.getEmail())) {
-            return ResponseEntity.status(HttpStatus.CONFLICT).build();
-        }
-        Optional<User> registeredUser = userService.registerUser(user);
-        return registeredUser
-            .map(u -> ResponseEntity.status(HttpStatus.CREATED).body(u))
-            .orElseGet(() -> ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build());
+    public User register(@RequestBody User user) {
+        return userService.registerUser(user);
     }
-
-    @GetMapping("/{email}")
-    public ResponseEntity<User> getUserByEmail(@PathVariable String email) {
-        Optional<User> user = userService.findUserByEmail(email);
-        return user
-            .map(ResponseEntity::ok)
-            .orElseGet(() -> ResponseEntity.status(HttpStatus.NOT_FOUND).build());
+    
+    // Login user with JWT token
+    @PostMapping("/login")
+    public LoginResponse login(@RequestParam String email, @RequestParam String password) {
+        return userService.loginUser(email, password);
     }
-
-    @PutMapping("/update")
-    public ResponseEntity<User> updateUser(@RequestBody User user) {
-        if (!userService.userExists(user.getEmail())) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+    
+    // Validate token and get user details
+    @GetMapping("/validate")
+    public User validateToken(@RequestHeader("Authorization") String token) {
+        // Remove "Bearer " prefix if present
+        if (token.startsWith("Bearer ")) {
+            token = token.substring(7);
         }
-        Optional<User> updatedUser = userService.updateUser(user);
-        return updatedUser
-            .map(ResponseEntity::ok)
-            .orElseGet(() -> ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build());
+        return userService.validateTokenAndGetUser(token);
+    }
+    
+    // Get user by ID
+    @GetMapping("/{id}")
+    public User getUser(@PathVariable Long id) {
+        return userService.getUserById(id);
+    }
+    
+    // Check if user is admin
+    @GetMapping("/isAdmin/{userId}")
+    public boolean isAdmin(@PathVariable Long userId) {
+        return userService.isAdmin(userId);
     }
 }
