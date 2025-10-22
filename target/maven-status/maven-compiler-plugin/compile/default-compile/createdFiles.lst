@@ -1,7 +1,0 @@
-com\backend\mediassist\controller\UserController.class
-com\backend\mediassist\service\UserServiceImpl.class
-com\backend\mediassist\repository\UserRepository.class
-com\backend\mediassist\MediAssistApplication.class
-com\backend\mediassist\service\UserServiceImp.class
-com\backend\mediassist\model\User.class
-com\backend\mediassist\service\UserService.class

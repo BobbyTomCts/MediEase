@@ -1,7 +1,9 @@
-C:\Users\2446124\OneDrive - Cognizant\Desktop\MediBuddy Backend\src\main\java\com\backend\mediassist\controller\UserController.java
-C:\Users\2446124\OneDrive - Cognizant\Desktop\MediBuddy Backend\src\main\java\com\backend\mediassist\MediAssistApplication.java
-C:\Users\2446124\OneDrive - Cognizant\Desktop\MediBuddy Backend\src\main\java\com\backend\mediassist\model\User.java
-C:\Users\2446124\OneDrive - Cognizant\Desktop\MediBuddy Backend\src\main\java\com\backend\mediassist\repository\UserRepository.java
-C:\Users\2446124\OneDrive - Cognizant\Desktop\MediBuddy Backend\src\main\java\com\backend\mediassist\service\UserService.java
-C:\Users\2446124\OneDrive - Cognizant\Desktop\MediBuddy Backend\src\main\java\com\backend\mediassist\service\UserServiceImp.java
-C:\Users\2446124\OneDrive - Cognizant\Desktop\MediBuddy Backend\src\main\java\com\backend\mediassist\service\UserServiceImpl.java
+C:\Users\2446124\OneDrive - Cognizant\Documents\MediEase-Backend\src\main\java\com\backend\mediassist\config\JwtUtil.java
+C:\Users\2446124\OneDrive - Cognizant\Documents\MediEase-Backend\src\main\java\com\backend\mediassist\config\SecurityConfig.java
+C:\Users\2446124\OneDrive - Cognizant\Documents\MediEase-Backend\src\main\java\com\backend\mediassist\config\SwaggerConfig.java
+C:\Users\2446124\OneDrive - Cognizant\Documents\MediEase-Backend\src\main\java\com\backend\mediassist\controller\UserController.java
+C:\Users\2446124\OneDrive - Cognizant\Documents\MediEase-Backend\src\main\java\com\backend\mediassist\MediAssistApplication.java
+C:\Users\2446124\OneDrive - Cognizant\Documents\MediEase-Backend\src\main\java\com\backend\mediassist\model\LoginResponse.java
+C:\Users\2446124\OneDrive - Cognizant\Documents\MediEase-Backend\src\main\java\com\backend\mediassist\model\User.java
+C:\Users\2446124\OneDrive - Cognizant\Documents\MediEase-Backend\src\main\java\com\backend\mediassist\repository\UserRepository.java
+C:\Users\2446124\OneDrive - Cognizant\Documents\MediEase-Backend\src\main\java\com\backend\mediassist\service\UserService.java
