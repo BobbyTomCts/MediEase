@@ -9,7 +9,7 @@ Feature: User Authentication
     Given I am on the Login page
     When I log in with valid credentials "<email>" and "<password>"
     Then I should be redirected to the dashboard or insurance selection page
-
+# I need to change the code
     Examples: Valid User Credentials
       | email               | password   |
       | jeni@gmail.com      | jeni123    |
