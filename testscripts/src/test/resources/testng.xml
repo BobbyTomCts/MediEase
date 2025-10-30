@@ -1,0 +1,9 @@
+<!DOCTYPE suite SYSTEM "https://testng.org/testng-1.0.dtd" >
+<suite name="CucumberSuite" verbose="1" >
+    <test name="FeatureExecutionTest">
+        <classes>
+            <class name="org.example.runners.TestRunner">
+            </class>
+        </classes>
+    </test>
+</suite>
