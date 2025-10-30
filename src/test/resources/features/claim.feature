@@ -13,7 +13,7 @@ Feature: Claim Submission Functionality
   @smoke
   Scenario: 1. Verify User Dashboard Access and Welcome Message
     Then I should see the welcome text starting with "Welcome back"
-
+#Checking the status of submit new claim
   Scenario: 2. Successful New Claim Submission and Status Check
     When I click on the 'Submit New Claim' button
     And I fill the claim form with hospital "Fortis Hospital (Mumbai, Maharashtra) - 12% Copay" and amount "20000"
