@@ -1,14 +1,12 @@
 @api_register_and_login
 Feature: API
-  @api_register_and_login
-  Feature: API
 
   Scenario: Testing the register and login of the user
     Given user is registering
       | fieldName | value               |
       | name      | vineesha            |
       | phone     | 8778878787          |
-      | email     | vineesha3@gmail.com |
+      | email     | vineesha4@gmail.com |
       | password  | selenium            |
     When the user is successfully registered
     Then the user can login
@@ -35,9 +33,5 @@ Feature: API
 
     When the user calls the isAdmin check endpoint
     Then the response confirms the user is "ADMIN"
-
-
-
-
 
 

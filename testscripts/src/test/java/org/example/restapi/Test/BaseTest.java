@@ -75,13 +75,40 @@ public class BaseTest {
                 .then().extract().response();
     }
 
+    // doPut allows null body for PUT requests without body (like approve/reject)
     protected Response doPut(String endpoint, Object body, String token) {
-        return RestAssured
-                .given()
-                .header("Authorization", "Bearer " + token)
-                .body(body)
-                .when()
+        RequestSpecification spec = RestAssured.given(requestSpecification);
+        if (token != null) {
+            spec.header("Authorization", "Bearer " + token);
+        }
+        if (body != null) {
+            spec.body(body);
+        }
+        return spec.when()
                 .put(endpoint)
+                .then().extract().response();
+    }
+    //  Dedicated method for POST requests that use Query Parameters (/requests/create).
+    protected Response doRequestWithQueryParams(String endpoint, Long empId, Double amount, Long hospitalId) {
+        return RestAssured
+                .given(requestSpecification)
+                .queryParam("empId", empId)
+                .queryParam("amount", amount)
+                .queryParam("hospitalId", hospitalId)
+                .when()
+                .post(endpoint)
+                .then().extract().response();
+    }
+
+    //     Dedicated method for GET requests with Optional Query Parameters (e.g., /requests/filtered).
+    protected Response doGetWithQueryParams(String endpoint, String status, String startDate, String endDate) {
+        RequestSpecification spec = RestAssured.given(requestSpecification);
+        if (status != null) { spec.queryParam("status", status); }
+        if (startDate != null) { spec.queryParam("startDate", startDate); }
+        if (endDate != null) { spec.queryParam("endDate", endDate); }
+
+        return spec.when()
+                .get(endpoint)
                 .then().extract().response();
     }
 }
