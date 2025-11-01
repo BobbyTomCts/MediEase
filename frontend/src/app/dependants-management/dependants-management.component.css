@@ -217,15 +217,27 @@
   box-shadow: var(--shadow-sm);
 }
 
-.add-btn:hover {
+.add-btn:hover:not(:disabled) {
   background: var(--color-primary-dark);
   box-shadow: var(--shadow-md);
   transform: translateY(-2px);
 }
 
+.add-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
 .plus-icon {
   font-size: 20px;
   font-weight: 700;
+}
+
+.max-dependants-msg {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-secondary);
+  margin-top: var(--spacing-sm);
+  font-style: italic;
 }
 
 /* ============================================
@@ -581,6 +593,14 @@
   background-repeat: no-repeat;
   background-position: right 16px center;
   padding-right: 40px;
+}
+
+.field-note {
+  display: block;
+  font-size: 0.75rem;
+  color: var(--color-text-tertiary);
+  margin-top: var(--spacing-xs);
+  font-style: italic;
 }
 
 /* ============================================

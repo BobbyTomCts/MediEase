@@ -33,6 +33,7 @@ export class DependantsManagement implements OnInit {
     gender: 'Male',
     relation: 'Spouse'
   };
+  siblingMaritalStatus: string = ''; // Track if sibling is married
   
   // Messages
   successMessage: string = '';
@@ -99,6 +100,12 @@ export class DependantsManagement implements OnInit {
 
   // Open add form
   openAddForm(): void {
+    // Check max limit
+    if (this.dependants.length >= 4) {
+      this.showErrorMessage('Maximum of 4 dependants allowed');
+      return;
+    }
+    
     this.isEditMode = false;
     this.currentDependantId = null;
     this.dependantForm = {
@@ -107,6 +114,7 @@ export class DependantsManagement implements OnInit {
       gender: 'Male',
       relation: 'Spouse'
     };
+    this.siblingMaritalStatus = '';
     this.formError = '';
     this.showDependantForm = true;
   }
@@ -121,6 +129,7 @@ export class DependantsManagement implements OnInit {
       gender: dependant.gender,
       relation: dependant.relation
     };
+    this.siblingMaritalStatus = ''; // Reset for edit mode
     this.formError = '';
     this.showDependantForm = true;
   }
@@ -128,7 +137,16 @@ export class DependantsManagement implements OnInit {
   // Close form
   closeForm(): void {
     this.showDependantForm = false;
+    this.siblingMaritalStatus = '';
     this.formError = '';
+  }
+
+  // Handle relation change
+  onRelationChange(): void {
+    // Reset sibling marital status when relation changes
+    if (this.dependantForm.relation !== 'Sibling') {
+      this.siblingMaritalStatus = '';
+    }
   }
 
   // Save dependant (add or edit)
@@ -137,6 +155,38 @@ export class DependantsManagement implements OnInit {
     if (!this.dependantForm.name || this.dependantForm.age <= 0) {
       this.formError = 'Please fill all fields correctly';
       return;
+    }
+
+    // Check if sibling is married
+    if (this.dependantForm.relation === 'Sibling') {
+      if (!this.siblingMaritalStatus) {
+        this.formError = 'Please select marital status for sibling';
+        return;
+      }
+      if (this.siblingMaritalStatus === 'Yes') {
+        this.formError = 'Married siblings cannot be added as dependants';
+        return;
+      }
+    }
+
+    // Check for duplicate dependants when adding
+    if (!this.isEditMode) {
+      const isDuplicate = this.dependants.some(dep => 
+        dep.name.toLowerCase() === this.dependantForm.name.toLowerCase() &&
+        dep.age === this.dependantForm.age &&
+        dep.relation === this.dependantForm.relation
+      );
+      
+      if (isDuplicate) {
+        this.formError = 'A dependant with the same name, age, and relation already exists';
+        return;
+      }
+
+      // Check max limit
+      if (this.dependants.length >= 4) {
+        this.formError = 'Maximum of 4 dependants allowed';
+        return;
+      }
     }
 
     if (this.isEditMode && this.currentDependantId) {

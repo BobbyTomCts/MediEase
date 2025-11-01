@@ -5,6 +5,7 @@ import { Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import { Auth } from '../services/auth';
 import { InsuranceService, ClaimRequest } from '../services/insurance.service';
+import { UserService } from '../services/user.service';
 
 // Interface for Request
 export interface Request {
@@ -45,7 +46,8 @@ export class AdminDashboard implements OnInit {
     private authService: Auth,
     private router: Router,
     private http: HttpClient,
-    private insuranceService: InsuranceService
+    private insuranceService: InsuranceService,
+    private userService: UserService
   ) {}
 
   ngOnInit(): void {
@@ -55,17 +57,35 @@ export class AdminDashboard implements OnInit {
       return;
     }
 
-    // Check if user is admin
-    if (!this.authService.isAdmin()) {
-      this.router.navigate(['/user-dashboard']);
+    // Get user ID
+    const userIdStr = localStorage.getItem('userId');
+    if (!userIdStr) {
+      this.router.navigate(['/login']);
       return;
     }
 
-    // Get user name
-    this.userName = this.authService.getUserName() || 'Admin';
+    const userId = parseInt(userIdStr);
 
-    // Load all requests
-    this.loadRequests();
+    // Verify admin status with backend (secure check)
+    this.userService.isAdmin(userId).subscribe({
+      next: (isAdmin) => {
+        if (!isAdmin) {
+          // User is not actually an admin, redirect
+          alert('Access Denied: You do not have admin privileges');
+          this.router.navigate(['/user-dashboard']);
+          return;
+        }
+        
+        // User is confirmed admin, proceed
+        this.userName = this.authService.getUserName() || 'Admin';
+        this.loadRequests();
+      },
+      error: (error) => {
+        console.error('Error verifying admin status:', error);
+        alert('Error verifying admin access');
+        this.router.navigate(['/login']);
+      }
+    });
   }
 
   // Load all insurance requests

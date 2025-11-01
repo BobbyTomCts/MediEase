@@ -97,12 +97,6 @@ export class NetworkHospitals implements OnInit {
     this.filteredHospitals = this.hospitals;
   }
 
-  getDirections(hospital: Hospital): void {
-    const address = encodeURIComponent(`${hospital.hospitalName}, ${hospital.address}, ${hospital.city}, ${hospital.state}`);
-    const url = `https://www.google.com/maps/search/?api=1&query=${address}`;
-    window.open(url, '_blank');
-  }
-
   callHospital(phone: string): void {
     window.location.href = `tel:${phone}`;
   }

@@ -105,24 +105,48 @@ export class UserProfile implements OnInit {
 
   // Save profile (Note: Backend doesn't have update endpoint, so this is UI only)
   saveProfile(): void {
-    // Since there's no update endpoint in the backend, we'll just update localStorage
-    // In a real app, you'd call an API to update the user
+    // Validate input
+    if (!this.editedProfile.name || this.editedProfile.name.trim() === '') {
+      this.errorMessage = 'Name cannot be empty';
+      setTimeout(() => {
+        this.errorMessage = '';
+      }, 3000);
+      return;
+    }
+    
     this.isSavingProfile = true;
     
-    setTimeout(() => {
-      if (this.editedProfile.name) {
-        localStorage.setItem('userName', this.editedProfile.name);
+    // Call backend API to update user
+    this.userService.updateUser(this.userId, {
+      name: this.editedProfile.name,
+      phone: this.editedProfile.phone
+    }).subscribe({
+      next: (updatedUser) => {
+        // Update local profile
+        this.userProfile = updatedUser;
+        
+        // Update localStorage
+        if (updatedUser.name) {
+          localStorage.setItem('userName', updatedUser.name);
+        }
+        
+        this.isEditMode = false;
+        this.isSavingProfile = false;
+        
+        this.successMessage = 'Profile updated successfully!';
+        setTimeout(() => {
+          this.successMessage = '';
+        }, 5000);
+      },
+      error: (err) => {
+        console.error('Error updating profile:', err);
+        this.errorMessage = 'Failed to update profile. Please try again.';
+        this.isSavingProfile = false;
+        setTimeout(() => {
+          this.errorMessage = '';
+        }, 5000);
       }
-      
-      this.userProfile = { ...this.editedProfile };
-      this.isEditMode = false;
-      this.isSavingProfile = false;
-      
-      this.successMessage = 'Profile updated successfully! (Note: Changes are local only)';
-      setTimeout(() => {
-        this.successMessage = '';
-      }, 5000);
-    }, 1000);
+    });
   }
 
   // Open add dependant popup

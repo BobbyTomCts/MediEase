@@ -44,10 +44,13 @@
     <div class="dependants-section" *ngIf="!isLoadingDependants">
       <!-- Add Dependant Button -->
       <div class="add-btn-container">
-        <button class="add-btn" (click)="openAddForm()">
+        <button class="add-btn" (click)="openAddForm()" [disabled]="dependants.length >= 4">
           <span class="plus-icon">+</span>
           Add Dependant
         </button>
+        <p class="max-dependants-msg" *ngIf="dependants.length >= 4">
+          Maximum of 4 dependants reached
+        </p>
       </div>
 
       <!-- Dependants Grid -->
@@ -183,14 +186,30 @@
             id="relation" 
             [(ngModel)]="dependantForm.relation" 
             name="relation"
+            (ngModelChange)="onRelationChange()"
             required
           >
             <option value="Spouse">Spouse</option>
             <option value="Child">Child</option>
             <option value="Parent">Parent</option>
             <option value="Sibling">Sibling</option>
-            <option value="Other">Other</option>
           </select>
+        </div>
+
+        <!-- Marital Status (Only for Sibling) -->
+        <div class="form-group" *ngIf="dependantForm.relation === 'Sibling'">
+          <label for="maritalStatus">Is the sibling married? *</label>
+          <select 
+            id="maritalStatus" 
+            [(ngModel)]="siblingMaritalStatus" 
+            name="maritalStatus"
+            required
+          >
+            <option value="">Select status</option>
+            <option value="No">No</option>
+            <option value="Yes">Yes</option>
+          </select>
+          <small class="field-note">Married siblings cannot be added as dependants</small>
         </div>
 
         <!-- Form Actions -->

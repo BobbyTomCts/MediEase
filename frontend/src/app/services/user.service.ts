@@ -24,4 +24,14 @@ export class UserService {
   getUserById(userId: number): Observable<UserProfile> {
     return this.http.get<UserProfile>(`${this.apiUrl}/${userId}`);
   }
+
+  // Update user profile
+  updateUser(userId: number, user: Partial<UserProfile>): Observable<UserProfile> {
+    return this.http.put<UserProfile>(`${this.apiUrl}/${userId}`, user);
+  }
+
+  // Check if user is admin (verify with backend)
+  isAdmin(userId: number): Observable<boolean> {
+    return this.http.get<boolean>(`${this.apiUrl}/isAdmin/${userId}`);
+  }
 }

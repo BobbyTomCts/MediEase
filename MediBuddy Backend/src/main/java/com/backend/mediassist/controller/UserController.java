@@ -41,6 +41,12 @@ public class UserController {
         return userService.getUserById(id);
     }
     
+    // Update user profile
+    @PutMapping("/{id}")
+    public User updateUser(@PathVariable Long id, @RequestBody User user) {
+        return userService.updateUser(id, user);
+    }
+    
     // Check if user is admin
     @GetMapping("/isAdmin/{userId}")
     public boolean isAdmin(@PathVariable Long userId) {
