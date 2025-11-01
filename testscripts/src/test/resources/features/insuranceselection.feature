@@ -1,4 +1,3 @@
-@regression
 Feature: Insurance Package Selection
 
   As a user who has logged in,
@@ -6,7 +5,7 @@ Feature: Insurance Package Selection
 
   Background: User Login and Initial State Setup
     Given I navigate to the login page
-    When I log in with email "abcd@gmail.com" and password "archana123"
+    When I log in with email "vineesha1@gmail.com" and password "selenium"
     Then I should be on the Insurance Selection page
   @smoke
   Scenario: Successful Login and Welcome Message Display

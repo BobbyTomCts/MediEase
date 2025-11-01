@@ -88,7 +88,7 @@ public class BaseTest {
                 .put(endpoint)
                 .then().extract().response();
     }
-    //  Dedicated method for POST requests that use Query Parameters (/requests/create).
+//  Dedicated method for POST requests that use Query Parameters (/requests/create).
     protected Response doRequestWithQueryParams(String endpoint, Long empId, Double amount, Long hospitalId) {
         return RestAssured
                 .given(requestSpecification)
@@ -100,7 +100,7 @@ public class BaseTest {
                 .then().extract().response();
     }
 
-    //     Dedicated method for GET requests with Optional Query Parameters (e.g., /requests/filtered).
+//     Dedicated method for GET requests with Optional Query Parameters (e.g., /requests/filtered).
     protected Response doGetWithQueryParams(String endpoint, String status, String startDate, String endDate) {
         RequestSpecification spec = RestAssured.given(requestSpecification);
         if (status != null) { spec.queryParam("status", status); }

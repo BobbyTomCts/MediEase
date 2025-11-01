@@ -1,20 +1,19 @@
-@smoke @regression
+@smoke
 Feature: User Authentication
 
   As a MediEase user
   I want to be able to log in
   So I can access my account dashboard
 
-  Scenario Outline: Successful User Login Redirect (Data Driven)
+  Scenario Outline: Successful User Login Redirect
     Given I am on the Login page
     When I log in with valid credentials "<email>" and "<password>"
     Then I should be redirected to the dashboard or insurance selection page
-# I need to change the code
     Examples: Valid User Credentials
-      | email               | password   |
-      | jeni@gmail.com      | jeni123    |
-      | archa@gmail.com     | archana123 |
-      | pri@gmail.com       | priya123   |
+      | email             | password   |
+      | lalitha@gmail.com | selenium   |
+      | archa@gmail.com   | archana123 |
+      | pri@gmail.com     | priya123   |
 
   Scenario: Successful Admin Login
     Given I am on the Login page
@@ -28,7 +27,7 @@ Feature: User Authentication
 
   Scenario: Invalid User Login (Password)
     Given I am on the Login page
-    When I log in with valid credentials "suba@example.com" and "password"
+    When I log in with valid credentials "lalitha@gmail.com" and "password"
     Then I should see the invalid password error message
 
   Scenario: Invalid User Login (User Not Found)

@@ -1,4 +1,4 @@
-@smoke @regression
+@smoke
 Feature: Navigation Bar Tests
 
   As a user of the application

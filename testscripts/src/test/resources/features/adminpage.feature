@@ -8,25 +8,25 @@ Feature: Admin Page Testing
     Given I am on the Admin page
     When I click on logout button
     Then I should be redirected to login page
-  @e2e
+
   Scenario: Approval for the pending claim and claim approval verification in user dashboard
     Given I am on the Admin page
-    When I click the "Approve" button for Request id "25"
-    Then The status for Request Id "25" should change to "APPROVED"
+    When I click the "Approve" button for Request id "42"
+    Then The status for Request Id "42" should change to "APPROVED"
 
     When I click on logout button
     Then I should be redirected to login page
 
-    Given I login as user with email "kavitha@gmail.com" and password "kavitha123"
-    Then the user sees status "APPROVED" for Request Id "25" on their dashboard
-  @e2e
+    Given I login as user with email "vineesha@gmail.com" and password "selenium"
+    Then the user sees status "APPROVED" for Request Id "42" on their dashboard
+
   Scenario: Rejection for the pending claim and claim rejection verification in user dashboard
     Given I am on the Admin page
-    When I click the "Reject" button for Request id "26"
-    Then The status for Request Id "26" should change to "REJECTED"
+    When I click the "Reject" button for Request id "43"
+    Then The status for Request Id "43" should change to "REJECTED"
 
     When I click on logout button
     Then I should be redirected to login page
 
-    Given I login as user with email "keerthana@gmail.com" and password "keerthana"
-    Then the user sees status "REJECTED" for Request Id "26" on their dashboard
+    Given I login as user with email "vineesha@gmail.com" and password "selenium"
+    Then the user sees status "REJECTED" for Request Id "43" on their dashboard

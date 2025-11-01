@@ -1,6 +1,5 @@
 package org.example.restapi.models;
 import java.time.LocalDateTime;
-
 public class Request {
 
     private Long requestId;

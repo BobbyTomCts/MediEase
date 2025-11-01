@@ -1,4 +1,3 @@
-@regression
 Feature: Network Hospitals Page Functionality
 
   As a user,

@@ -1,4 +1,3 @@
-@regression
 Feature: User Profile Functionality
 
   As a logged-in user,
@@ -14,12 +13,10 @@ Feature: User Profile Functionality
   Scenario: 1. Successful Profile Editing (Name and Phone)
 
     When I click "Edit Profile" button
-    And I set the "Full Name" to "Chitteti Kavitha"
+    And I set the "Full Name" to "CH Kavitha"
     And I set the "Phone Number" to "9988776655"
     And I click "Save Changes" button
-    Then I should see the success message "Profile updated successfully! (Note: Changes are local only)"
-
-
+    Then I should see the success message "Profile updated successfully!"
 
   Scenario: 2. Cancel Profile Editing
 
@@ -27,7 +24,7 @@ Feature: User Profile Functionality
     And I set the "Full Name" to "Chitteti"
     And I click "Cancel" button
     Then I should see the "Edit Profile" button
-    And I should see the "Full Name" displayed as "Kavitha"
+    And I should see the "Full Name" displayed as "CH Kavitha"
 
  @smoke
   Scenario: 3. Navigation to Manage Dependents

@@ -1,4 +1,3 @@
-@regression
 Feature: Admin Dashboard Filtering
 
   As an Admin,
