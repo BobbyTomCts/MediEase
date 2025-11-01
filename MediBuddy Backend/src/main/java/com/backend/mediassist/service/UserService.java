@@ -87,6 +87,30 @@ public class UserService {
         return userRepository.findById(id).orElse(null);
     }
     
+    // Update user profile
+    public User updateUser(Long id, User updatedUser) {
+        User user = userRepository.findById(id).orElse(null);
+        
+        if (user == null) {
+            throw new RuntimeException("User not found with ID: " + id);
+        }
+        
+        // Update name if provided
+        if (updatedUser.getName() != null && !updatedUser.getName().trim().isEmpty()) {
+            user.setName(updatedUser.getName());
+        }
+        
+        // Update phone if provided
+        if (updatedUser.getPhone() != null && !updatedUser.getPhone().trim().isEmpty()) {
+            user.setPhone(updatedUser.getPhone());
+        }
+        
+        // Email cannot be changed (it's the unique identifier)
+        // Password update should be done through a separate secure endpoint
+        
+        return userRepository.save(user);
+    }
+    
     // Check if user is admin
     public boolean isAdmin(Long userId) {
         User user = userRepository.findById(userId).orElse(null);

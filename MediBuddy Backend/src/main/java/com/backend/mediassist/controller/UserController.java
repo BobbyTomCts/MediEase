@@ -13,7 +13,8 @@ public class UserController {
     
     @Autowired
     private UserService userService;
-
+    
+    // Register new user
     @PostMapping("/register")
     public User register(@RequestBody User user) {
         return userService.registerUser(user);
@@ -39,6 +40,12 @@ public class UserController {
     @GetMapping("/{id}")
     public User getUser(@PathVariable Long id) {
         return userService.getUserById(id);
+    }
+    
+    // Update user profile
+    @PutMapping("/{id}")
+    public User updateUser(@PathVariable Long id, @RequestBody User user) {
+        return userService.updateUser(id, user);
     }
     
     // Check if user is admin

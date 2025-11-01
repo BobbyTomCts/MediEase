@@ -41,6 +41,19 @@ public class InsuranceService {
     
     // Add dependant
     public Dependant addDependant(Long empId, String dependantName, Integer age, String gender, String relation) {
+        // Check if maximum number of dependants (4) reached
+        long currentCount = dependantRepository.countByDependantFor(empId);
+        if (currentCount >= 4) {
+            throw new RuntimeException("Maximum of 4 dependants allowed per employee");
+        }
+        
+        // Check for duplicate dependant (same name, age, and relation)
+        dependantRepository.findByNameIgnoreCaseAndAgeAndRelationAndDependantFor(
+            dependantName, age, relation, empId
+        ).ifPresent(existing -> {
+            throw new RuntimeException("A dependant with the same name, age, and relation already exists");
+        });
+        
         Dependant dependant = new Dependant();
         dependant.setName(dependantName);
         dependant.setAge(age);
