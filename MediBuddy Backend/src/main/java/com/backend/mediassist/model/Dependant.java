@@ -12,7 +12,7 @@ public class Dependant {
     
     private String name;
     private Integer age;
-    private String gender; // "Male", "Female", "Other"
+    private String gender; // "Male", "Female"
     private String relation; // "Spouse", "Child", "Parent", "Sibling"
     private Long dependantFor; // Employee ID
     

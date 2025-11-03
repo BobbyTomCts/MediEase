@@ -124,7 +124,7 @@ export class UserProfile implements OnInit {
       next: (updatedUser) => {
         // Update local profile
         this.userProfile = updatedUser;
-        
+        this.loadUserProfile();
         // Update localStorage
         if (updatedUser.name) {
           localStorage.setItem('userName', updatedUser.name);

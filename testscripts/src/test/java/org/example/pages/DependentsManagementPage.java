@@ -13,7 +13,8 @@ import org.openqa.selenium.support.ui.Select;
 
 public class DependentsManagementPage extends BasePage {
 
-    @FindBy(css = ".add-btn")
+//    @FindBy(css = ".add-btn")
+    @FindBy(xpath = "/html/body/app-root/app-dependants-management/div/div/div[2]/div[1]/button")
     private WebElement addDependentButton;
 
     @FindBy(css = ".skip-btn")
@@ -58,8 +59,10 @@ public class DependentsManagementPage extends BasePage {
     }
 
     public void clickAddDependant() {
-
-        click(addDependentButton);    }
+        WebElement button = webWait().until(ExpectedConditions.elementToBeClickable(addDependentButton));
+        DriverManager.get().executeScript("arguments[0].click();", button);
+//        click(addDependentButton);
+    }
 
     public void clickSkipAndCompleteSetup() {
         click(skipAndCompleteSetupButton);

@@ -25,6 +25,10 @@ public class InsuranceService {
     
     // Create insurance for employee
     public Insurance createInsurance(Long empId, Long packageId) {
+        // 1. Check for duplicate insurance (MUST be added)
+        if (insuranceRepository.findByEmpId(empId) != null) {
+            throw new RuntimeException("Insurance already exists for employee " + empId);
+        }
         InsuranceType insuranceType = insuranceTypeRepository.findById(packageId).orElse(null);
         
         if (insuranceType == null) {

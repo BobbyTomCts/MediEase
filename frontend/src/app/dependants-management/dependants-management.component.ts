@@ -200,10 +200,11 @@ export class DependantsManagement implements OnInit {
       ).subscribe({
         next: (data) => {
           // Update in local array
-          const index = this.dependants.findIndex(d => d.id === this.currentDependantId);
-          if (index !== -1) {
-            this.dependants[index] = data;
-          }
+          // const index = this.dependants.findIndex(d => d.id === this.currentDependantId);
+          // if (index !== -1) {
+          //   this.dependants[index] = data;
+          // }
+          this.loadDependants();
           this.showSuccessMessage('Dependant updated successfully!');
           this.closeForm();
         },
@@ -242,7 +243,8 @@ export class DependantsManagement implements OnInit {
 
     this.insuranceService.deleteDependant(dependantId).subscribe({
       next: () => {
-        this.dependants = this.dependants.filter(d => d.id !== dependantId);
+        // this.dependants = this.dependants.filter(d => d.id !== dependantId);
+        this.loadDependants();
         this.showSuccessMessage('Dependant removed successfully!');
       },
       error: (err) => {

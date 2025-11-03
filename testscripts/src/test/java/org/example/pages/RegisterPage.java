@@ -24,7 +24,7 @@ public class RegisterPage extends BasePage {
     @FindBy(xpath = "//html/body/app-root/app-register/div/div/form/button")
     private WebElement registerButton;
 
-    @FindBy(xpath = "/html/body/app-root/app-register/div/div/div")
+    @FindBy(xpath = "/html/body/app-root/app-register/div/div/div[2]")
     private WebElement errorMessage;
 
     public RegisterPage() {
