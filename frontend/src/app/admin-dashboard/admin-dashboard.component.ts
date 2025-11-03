@@ -172,8 +172,15 @@ export class AdminDashboard implements OnInit {
       },
       error: (error) => {
         console.error('Error approving request:', error);
-        this.message = 'Error approving request';
-        setTimeout(() => this.message = '', 3000);
+        // Display the error message from backend
+        if (error.error && typeof error.error === 'string') {
+          this.message = error.error;
+        } else if (error.error && error.error.message) {
+          this.message = error.error.message;
+        } else {
+          this.message = 'Error approving request';
+        }
+        setTimeout(() => this.message = '', 5000);
       }
     });
   }

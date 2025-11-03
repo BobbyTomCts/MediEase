@@ -45,10 +45,24 @@ public class InsuranceService {
     
     // Add dependant
     public Dependant addDependant(Long empId, String dependantName, Integer age, String gender, String relation) {
+        // Validate relation
+        if (!relation.equals("Spouse") && !relation.equals("Child") && 
+            !relation.equals("Father") && !relation.equals("Mother") && !relation.equals("Sibling")) {
+            throw new RuntimeException("Invalid relation. Allowed values: Spouse, Child, Father, Mother, Sibling");
+        }
+        
         // Check if maximum number of dependants (4) reached
         long currentCount = dependantRepository.countByDependantFor(empId);
         if (currentCount >= 4) {
             throw new RuntimeException("Maximum of 4 dependants allowed per employee");
+        }
+        
+        // Check for Father/Mother uniqueness - only one of each allowed
+        if (relation.equals("Father") || relation.equals("Mother")) {
+            List<Dependant> existingParents = dependantRepository.findByDependantForAndRelation(empId, relation);
+            if (!existingParents.isEmpty()) {
+                throw new RuntimeException("You can only add one " + relation.toLowerCase() + " as a dependant");
+            }
         }
         
         // Check for duplicate dependant (same name, age, and relation)
@@ -75,10 +89,26 @@ public class InsuranceService {
     
     // Update/Edit dependant
     public Dependant updateDependant(Long dependantId, String name, Integer age, String gender, String relation) {
+        // Validate relation
+        if (!relation.equals("Spouse") && !relation.equals("Child") && 
+            !relation.equals("Father") && !relation.equals("Mother") && !relation.equals("Sibling")) {
+            throw new RuntimeException("Invalid relation. Allowed values: Spouse, Child, Father, Mother, Sibling");
+        }
+        
         Dependant dependant = dependantRepository.findById(dependantId).orElse(null);
         
         if (dependant == null) {
             throw new RuntimeException("Dependant not found with ID: " + dependantId);
+        }
+        
+        // If changing to Father or Mother, check if one already exists (excluding current dependant)
+        if ((relation.equals("Father") || relation.equals("Mother")) && 
+            !dependant.getRelation().equals(relation)) {
+            List<Dependant> existingParents = dependantRepository.findByDependantForAndRelation(
+                dependant.getDependantFor(), relation);
+            if (!existingParents.isEmpty()) {
+                throw new RuntimeException("You can only have one " + relation.toLowerCase() + " as a dependant");
+            }
         }
         
         dependant.setName(name);

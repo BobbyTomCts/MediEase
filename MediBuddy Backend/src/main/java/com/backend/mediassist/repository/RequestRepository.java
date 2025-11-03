@@ -13,6 +13,9 @@ public interface RequestRepository extends JpaRepository<Request, Long> {
     List<Request> findByEmpId(Long empId);
     List<Request> findByStatus(String status);
     
+    // Find pending requests for a specific employee
+    List<Request> findByEmpIdAndStatus(Long empId, String status);
+    
     // Filter by status and date range
     @Query("SELECT r FROM Request r WHERE r.status = :status AND r.createdAt >= :startDate AND r.createdAt <= :endDate ORDER BY r.createdAt DESC")
     List<Request> findByStatusAndDateRange(@Param("status") String status, @Param("startDate") LocalDateTime startDate, @Param("endDate") LocalDateTime endDate);

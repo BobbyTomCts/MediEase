@@ -169,8 +169,20 @@ export class DependantsManagement implements OnInit {
       }
     }
 
-    // Check for duplicate dependants when adding
+    // Check for Father/Mother uniqueness when adding
     if (!this.isEditMode) {
+      if (this.dependantForm.relation === 'Father' || this.dependantForm.relation === 'Mother') {
+        const existingParent = this.dependants.some(dep => 
+          dep.relation === this.dependantForm.relation
+        );
+        
+        if (existingParent) {
+          this.formError = `You can only add one ${this.dependantForm.relation.toLowerCase()} as a dependant`;
+          return;
+        }
+      }
+
+      // Check for duplicate dependants when adding
       const isDuplicate = this.dependants.some(dep => 
         dep.name.toLowerCase() === this.dependantForm.name.toLowerCase() &&
         dep.age === this.dependantForm.age &&
@@ -186,6 +198,18 @@ export class DependantsManagement implements OnInit {
       if (this.dependants.length >= 4) {
         this.formError = 'Maximum of 4 dependants allowed';
         return;
+      }
+    } else {
+      // When editing, check if changing to Father/Mother and one already exists
+      if (this.dependantForm.relation === 'Father' || this.dependantForm.relation === 'Mother') {
+        const existingParent = this.dependants.some(dep => 
+          dep.relation === this.dependantForm.relation && dep.id !== this.currentDependantId
+        );
+        
+        if (existingParent) {
+          this.formError = `You can only have one ${this.dependantForm.relation.toLowerCase()} as a dependant`;
+          return;
+        }
       }
     }
 

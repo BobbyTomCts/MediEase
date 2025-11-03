@@ -236,7 +236,14 @@ export class UserHome implements OnInit {
       },
       error: (err) => {
         console.error('Error creating claim:', err);
-        this.claimError = 'Failed to submit claim. Please try again.';
+        // Display the error message from backend
+        if (err.error && typeof err.error === 'string') {
+          this.claimError = err.error;
+        } else if (err.error && err.error.message) {
+          this.claimError = err.error.message;
+        } else {
+          this.claimError = 'Failed to submit claim. Please try again.';
+        }
         this.isSubmittingClaim = false;
       }
     });

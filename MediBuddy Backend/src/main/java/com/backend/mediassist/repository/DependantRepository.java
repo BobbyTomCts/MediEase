@@ -16,4 +16,7 @@ public interface DependantRepository extends JpaRepository<Dependant, Long> {
     
     // Count dependants for an employee
     long countByDependantFor(Long empId);
+    
+    // Find dependants by relation for an employee
+    List<Dependant> findByDependantForAndRelation(Long empId, String relation);
 }

@@ -13,7 +13,7 @@ public class Dependant {
     private String name;
     private Integer age;
     private String gender; // "Male", "Female"
-    private String relation; // "Spouse", "Child", "Parent", "Sibling"
+    private String relation; // "Spouse", "Child", "Father", "Mother", "Sibling"
     private Long dependantFor; // Employee ID
     
     // Getters and Setters

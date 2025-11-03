@@ -26,6 +26,12 @@ public class RequestService {
     
     // Create new claim request with hospital selection
     public Request createRequest(Long empId, Double amount, Long hospitalId) {
+        // Check if user has any pending requests
+        List<Request> pendingRequests = requestRepository.findByEmpIdAndStatus(empId, "PENDING");
+        if (!pendingRequests.isEmpty()) {
+            throw new RuntimeException("You already have a pending request. Please wait for admin approval before making another request.");
+        }
+        
         Request request = new Request();
         request.setEmpId(empId);
         request.setRequestAmount(amount);
@@ -51,7 +57,18 @@ public class RequestService {
         Request request = requestRepository.findById(requestId).orElse(null);
         
         if (request == null) {
-            return null;
+            throw new RuntimeException("Request not found");
+        }
+        
+        // Check if already processed
+        if (!"PENDING".equals(request.getStatus())) {
+            throw new RuntimeException("Request has already been processed");
+        }
+        
+        // Get insurance and validate balance
+        Insurance insurance = insuranceRepository.findByEmpId(request.getEmpId());
+        if (insurance == null) {
+            throw new RuntimeException("No insurance found for this employee");
         }
         
         // Get hospital and calculate copay
@@ -65,16 +82,16 @@ public class RequestService {
             approvedAmount = request.getRequestAmount() - copayAmount;
         }
         
-        // Update insurance amount: deduct TOTAL request amount (approved + copay)
-        // Formula: amountRemaining = amountRemaining - approvedAmount - copayAmount
-        // OR: amountRemaining = amountRemaining - requestAmount
-        Insurance insurance = insuranceRepository.findByEmpId(request.getEmpId());
-        if (insurance != null) {
-            // Deduct the full request amount (both what insurance pays and what user pays as copay)
-            Double newAmount = insurance.getAmountRemaining() - approvedAmount-copayAmount;
-            insurance.setAmountRemaining(newAmount);
-            insuranceRepository.save(insurance);
+        // Check if user has sufficient balance for the approved amount
+        if (insurance.getAmountRemaining() < approvedAmount) {
+            throw new RuntimeException("Insufficient insurance balance. Available: " + 
+                insurance.getAmountRemaining() + ", Required: " + approvedAmount);
         }
+        
+        // Update insurance amount: deduct approved amount (what insurance pays)
+        Double newAmount = insurance.getAmountRemaining() - approvedAmount;
+        insurance.setAmountRemaining(newAmount);
+        insuranceRepository.save(insurance);
         
         // Update request
         request.setStatus("APPROVED");

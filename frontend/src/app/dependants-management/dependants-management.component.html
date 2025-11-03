@@ -60,8 +60,9 @@
             <div class="dependant-icon">
               <span *ngIf="dependant.relation === 'Spouse'">💑</span>
               <span *ngIf="dependant.relation === 'Child'">👶</span>
-              <span *ngIf="dependant.relation === 'Parent'">👴</span>
-              <span *ngIf="dependant.relation !== 'Spouse' && dependant.relation !== 'Child' && dependant.relation !== 'Parent'">👤</span>
+              <span *ngIf="dependant.relation === 'Father'">�</span>
+              <span *ngIf="dependant.relation === 'Mother'">👩</span>
+              <span *ngIf="dependant.relation === 'Sibling'">👤</span>
             </div>
             <div class="dependant-info">
               <h3>{{ dependant.name }}</h3>
@@ -191,7 +192,8 @@
           >
             <option value="Spouse">Spouse</option>
             <option value="Child">Child</option>
-            <option value="Parent">Parent</option>
+            <option value="Father">Father</option>
+            <option value="Mother">Mother</option>
             <option value="Sibling">Sibling</option>
           </select>
         </div>
