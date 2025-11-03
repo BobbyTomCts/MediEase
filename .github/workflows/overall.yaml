@@ -1,6 +1,3 @@
-# GitHub Actions CI/CD Workflow for Angular + Spring Boot
-# Parallel jobs: frontend + backend, then summary aggregation.
-
 name: overall
 
 on:
