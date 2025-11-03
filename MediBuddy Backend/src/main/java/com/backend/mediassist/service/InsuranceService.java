@@ -57,10 +57,10 @@ public class InsuranceService {
             throw new RuntimeException("Maximum of 4 dependants allowed per employee");
         }
         
-        // Check for Father/Mother uniqueness - only one of each allowed
-        if (relation.equals("Father") || relation.equals("Mother")) {
-            List<Dependant> existingParents = dependantRepository.findByDependantForAndRelation(empId, relation);
-            if (!existingParents.isEmpty()) {
+        // Check for Spouse/Father/Mother uniqueness - only one of each allowed
+        if (relation.equals("Spouse") || relation.equals("Father") || relation.equals("Mother")) {
+            List<Dependant> existingRelation = dependantRepository.findByDependantForAndRelation(empId, relation);
+            if (!existingRelation.isEmpty()) {
                 throw new RuntimeException("You can only add one " + relation.toLowerCase() + " as a dependant");
             }
         }
@@ -101,12 +101,12 @@ public class InsuranceService {
             throw new RuntimeException("Dependant not found with ID: " + dependantId);
         }
         
-        // If changing to Father or Mother, check if one already exists (excluding current dependant)
-        if ((relation.equals("Father") || relation.equals("Mother")) && 
+        // If changing to Spouse/Father/Mother, check if one already exists (excluding current dependant)
+        if ((relation.equals("Spouse") || relation.equals("Father") || relation.equals("Mother")) && 
             !dependant.getRelation().equals(relation)) {
-            List<Dependant> existingParents = dependantRepository.findByDependantForAndRelation(
+            List<Dependant> existingRelation = dependantRepository.findByDependantForAndRelation(
                 dependant.getDependantFor(), relation);
-            if (!existingParents.isEmpty()) {
+            if (!existingRelation.isEmpty()) {
                 throw new RuntimeException("You can only have one " + relation.toLowerCase() + " as a dependant");
             }
         }

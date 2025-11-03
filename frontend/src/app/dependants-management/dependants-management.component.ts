@@ -171,12 +171,12 @@ export class DependantsManagement implements OnInit {
 
     // Check for Father/Mother uniqueness when adding
     if (!this.isEditMode) {
-      if (this.dependantForm.relation === 'Father' || this.dependantForm.relation === 'Mother') {
-        const existingParent = this.dependants.some(dep => 
+      if (this.dependantForm.relation === 'Spouse' || this.dependantForm.relation === 'Father' || this.dependantForm.relation === 'Mother') {
+        const existingRelation = this.dependants.some(dep => 
           dep.relation === this.dependantForm.relation
         );
         
-        if (existingParent) {
+        if (existingRelation) {
           this.formError = `You can only add one ${this.dependantForm.relation.toLowerCase()} as a dependant`;
           return;
         }
@@ -200,13 +200,13 @@ export class DependantsManagement implements OnInit {
         return;
       }
     } else {
-      // When editing, check if changing to Father/Mother and one already exists
-      if (this.dependantForm.relation === 'Father' || this.dependantForm.relation === 'Mother') {
-        const existingParent = this.dependants.some(dep => 
+      // When editing, check if changing to Spouse/Father/Mother and one already exists
+      if (this.dependantForm.relation === 'Spouse' || this.dependantForm.relation === 'Father' || this.dependantForm.relation === 'Mother') {
+        const existingRelation = this.dependants.some(dep => 
           dep.relation === this.dependantForm.relation && dep.id !== this.currentDependantId
         );
         
-        if (existingParent) {
+        if (existingRelation) {
           this.formError = `You can only have one ${this.dependantForm.relation.toLowerCase()} as a dependant`;
           return;
         }

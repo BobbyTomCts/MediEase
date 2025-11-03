@@ -113,7 +113,7 @@ export class InsuranceService {
 
   // Delete dependant
   deleteDependant(dependantId: number): Observable<string> {
-    return this.http.delete<string>(`${this.apiUrl}/insurance/dependant/delete/${dependantId}`);
+    return this.http.delete(`${this.apiUrl}/insurance/dependant/delete/${dependantId}`, { responseType: 'text' });
   }
 
   // Get all insurance packages
