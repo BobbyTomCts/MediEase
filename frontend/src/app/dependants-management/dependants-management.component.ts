@@ -266,14 +266,15 @@ export class DependantsManagement implements OnInit {
     }
 
     this.insuranceService.deleteDependant(dependantId).subscribe({
-      next: () => {
+      next: (response) => {
         // this.dependants = this.dependants.filter(d => d.id !== dependantId);
         this.loadDependants();
-        this.showSuccessMessage('Dependant removed successfully!');
+        this.showSuccessMessage(response.message || 'Dependant removed successfully!');
       },
       error: (err) => {
         console.error('Error deleting dependant:', err);
-        this.showErrorMessage('Failed to remove dependant');
+        const errorMsg = err.error?.message || 'Failed to remove dependant';
+        this.showErrorMessage(errorMsg);
       }
     });
   }

@@ -93,4 +93,10 @@ public class ProfilePageStepDefinitions {
         Assert.assertEquals(currentUrl, expectedUrl,
                 "The navigation URL is incorrect after clicking. Expected: " + expectedUrl + ", but found: " + currentUrl);
     }
+
+    @When("I refresh the page")
+    public void iRefreshThePage() throws InterruptedException {
+        DriverManager.get().navigate().refresh();
+        Thread.sleep(2000); // Wait for page to reload
+    }
 }

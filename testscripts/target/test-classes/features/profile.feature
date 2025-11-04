@@ -17,6 +17,11 @@ Feature: User Profile Functionality
     And I set the "Phone Number" to "9988776655"
     And I click "Save Changes" button
     Then I should see the success message "Profile updated successfully!"
+    And I should see the "Full Name" displayed as "CH Kavitha"
+    And I should see the "Phone Number" displayed as "9988776655"
+    When I refresh the page
+    Then I should see the "Full Name" displayed as "CH Kavitha"
+    And I should see the "Phone Number" displayed as "9988776655"
 
   Scenario: 2. Cancel Profile Editing
 

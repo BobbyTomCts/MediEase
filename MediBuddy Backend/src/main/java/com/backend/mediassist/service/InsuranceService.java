@@ -120,7 +120,7 @@ public class InsuranceService {
     }
     
     // Delete/Remove dependant
-    public String deleteDependant(Long dependantId) {
+    public MessageResponse deleteDependant(Long dependantId) {
         Dependant dependant = dependantRepository.findById(dependantId).orElse(null);
         
         if (dependant == null) {
@@ -128,7 +128,7 @@ public class InsuranceService {
         }
         
         dependantRepository.deleteById(dependantId);
-        return "Dependant deleted successfully";
+        return new MessageResponse("Dependant deleted successfully", true);
     }
     
     // Get insurance for employee

@@ -33,6 +33,12 @@ export interface Dependant {
   dependantFor: number;
 }
 
+// Message Response model
+export interface MessageResponse {
+  message: string;
+  success: boolean;
+}
+
 // Insurance Package model
 export interface InsurancePackage {
   insuranceId: number;
@@ -112,8 +118,8 @@ export class InsuranceService {
   }
 
   // Delete dependant
-  deleteDependant(dependantId: number): Observable<string> {
-    return this.http.delete(`${this.apiUrl}/insurance/dependant/delete/${dependantId}`, { responseType: 'text' });
+  deleteDependant(dependantId: number): Observable<MessageResponse> {
+    return this.http.delete<MessageResponse>(`${this.apiUrl}/insurance/dependant/delete/${dependantId}`);
   }
 
   // Get all insurance packages
