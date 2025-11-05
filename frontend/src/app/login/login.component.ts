@@ -27,21 +27,22 @@ export class Login {
       next: (response) => {
         console.log('Login response:', response);
         console.log('Token:', response.token);
-        console.log('admin:', response.admin);
+        console.log('Role:', response.role);
+        console.log('IsAdmin:', response.admin);
         
         if (response.token) {
-          // Save user data to localStorage
+          // Save all user data (token, id, name, email, role, admin)
           this.authService.saveUserData(response);
           
-          console.log('Saved to localStorage, isAdmin:', localStorage.getItem('isAdmin'));
+          console.log('Saved to localStorage');
           
           this.message = 'Login successful! Redirecting...';
           this.isError = false;
 
-          // Redirect based on role
+          // Redirect based on admin flag
           setTimeout(() => {
             console.log('Redirecting... admin:', response.admin);
-            if (response.admin) {  // Changed from response.isAdmin to response.admin
+            if (response.admin) {
               console.log('Navigating to admin-dashboard');
               this.router.navigate(['/admin-dashboard']);
             } else {

@@ -169,15 +169,25 @@ export class Login {
     this.authService.login(this.email, this.password).subscribe({
       next: (response) => {
         if (response.token) {
-          // Save user data to localStorage
+          // Save token and user data
           this.authService.saveUserData(response);
+          
+          // Get full user details using validate endpoint
+          this.authService.validateToken().subscribe({
+            next: (user) => {
+              this.authService.saveUserDetails(user);
+            },
+            error: (err) => {
+              console.error('Error fetching user details:', err);
+            }
+          });
           
           this.message = 'Login successful! Redirecting...';
           this.isError = false;
 
           // Redirect based on role
           setTimeout(() => {
-            if (response.admin) {
+            if (response.role === 'ADMIN') {
               this.router.navigate(['/admin-dashboard']);
             } else {
               this.router.navigate(['/user-dashboard']);

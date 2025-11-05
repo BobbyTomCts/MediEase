@@ -18,7 +18,7 @@ export interface LoginResponse {
   name: string;
   email: string;
   role: string;
-  admin: boolean;  // Changed from isAdmin to admin to match backend
+  admin: boolean;  // Changed from isAdmin to admin (JSON property name)
   message: string;
   token: string;
 }
@@ -42,6 +42,11 @@ export class Auth {
     return this.http.post<LoginResponse>(`${this.apiUrl}/login?email=${email}&password=${password}`, {});
   }
 
+  // Validate token and get user details
+  validateToken(): Observable<User> {
+    return this.http.get<User>(`${this.apiUrl}/validate`);
+  }
+
   // Save user data and token to localStorage
   saveUserData(response: LoginResponse): void {
     localStorage.setItem('token', response.token);
@@ -49,7 +54,13 @@ export class Auth {
     localStorage.setItem('userName', response.name);
     localStorage.setItem('userEmail', response.email);
     localStorage.setItem('userRole', response.role);
-    localStorage.setItem('isAdmin', response.admin.toString());  // Changed from response.isAdmin to response.admin
+    localStorage.setItem('isAdmin', response.admin.toString());
+  }
+
+  // Save additional user details from validate endpoint
+  saveUserDetails(user: User): void {
+    if (user.name) localStorage.setItem('userName', user.name);
+    if (user.email) localStorage.setItem('userEmail', user.email);
   }
 
   // Get token from localStorage
