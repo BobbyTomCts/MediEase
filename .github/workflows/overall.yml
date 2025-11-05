@@ -12,6 +12,7 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
+  # The frontend job is already quite minimal and essential for unit tests, build, and artifacts.
   frontend:
     runs-on: ubuntu-latest
     defaults:
@@ -27,10 +28,13 @@ jobs:
           cache: 'npm'
           cache-dependency-path: frontend/package-lock.json
       - name: Install frontend dependencies
+        # This is the minimal install step.
         run: npm ci
       - name: Build frontend
+        # Essential for creating the dist artifact.
         run: npm run build --if-present
       - name: Run frontend tests with coverage
+        # Essential for running the frontend unit tests.
         run: npx ng test --watch=false --browsers=ChromeHeadless --code-coverage
       - name: Upload frontend dist
         if: success()
@@ -45,6 +49,7 @@ jobs:
           name: frontend-coverage
           path: frontend/coverage/**
 
+  # Streamlined Backend job for UI tests
   backend:
     runs-on: ubuntu-latest
     needs: [frontend]
@@ -73,13 +78,17 @@ jobs:
           java-version: '17'
           cache: 'maven'
       - name: Set up Node.js (for serving frontend during UI tests)
+        # Re-adding Node.js setup is necessary for the frontend serving steps below.
         uses: actions/setup-node@v4
         with:
           node-version: '24.7.0'
           cache: 'npm'
           cache-dependency-path: frontend/package-lock.json
+
+      # --- MySQL Setup/Wait: Minimal required to ensure the DB is ready for the Spring app.
       - name: Install MySQL client & wait for readiness
         run: |
+          # Combined install and wait for readiness.
           sudo apt-get update && sudo apt-get install -y mysql-client
           for i in {1..20}; do
             if mysqladmin ping -h 127.0.0.1 --silent; then echo "MySQL is up"; break; fi
@@ -87,21 +96,25 @@ jobs:
           done
           mysqladmin ping -h 127.0.0.1 --silent || { echo "MySQL did not become ready in time"; exit 1; }
       - name: Prepare test database user (idempotent)
+        # Minimal commands to setup the database and user.
         run: |
-          mysql -h 127.0.0.1 -uroot -proot -e "CREATE DATABASE IF NOT EXISTS testdb;"
-          mysql -h 127.0.0.1 -uroot -proot -e "CREATE USER IF NOT EXISTS 'ci_user'@'%' IDENTIFIED BY 'ci_pass';"
-          mysql -h 127.0.0.1 -uroot -proot -e "GRANT ALL PRIVILEGES ON testdb.* TO 'ci_user'@'%'; FLUSH PRIVILEGES;"
+          mysql -h 127.0.0.1 -uroot -proot -e "CREATE DATABASE IF NOT EXISTS testdb; CREATE USER IF NOT EXISTS 'ci_user'@'%' IDENTIFIED BY 'ci_pass'; GRANT ALL PRIVILEGES ON testdb.* TO 'ci_user'@'%'; FLUSH PRIVILEGES;"
           mysql -h 127.0.0.1 -uci_user -pci_pass -e "SELECT SCHEMA_NAME FROM INFORMATION_SCHEMA.SCHEMATA WHERE SCHEMA_NAME='testdb';"
+      # --- Backend Build/Test: Minimal command to run backend unit/integration tests.
       - name: Build backend & run unit/integration tests (test profile)
         env:
           SPRING_PROFILES_ACTIVE: test
         run: mvn -q --no-transfer-progress clean verify -Dspring.profiles.active=test
-      - name: Install frontend dependencies (for dev server)
+
+      # --- Frontend Setup for UI Tests: Combined npm steps into one, using the frontend directory.
+      - name: Install and Build frontend for dev server (UI tests)
         working-directory: frontend
-        run: npm ci
-      - name: Build frontend (development) for UI tests
-        working-directory: frontend
-        run: npm run build -- --configuration=development
+        # Combined install and build development config into one step.
+        run: |
+          npm ci
+          npm run build -- --configuration=development
+
+      # --- Server Startup: Minimal commands to start servers in the background.
       - name: Start Angular dev server (background)
         working-directory: frontend
         run: |
@@ -119,10 +132,14 @@ jobs:
           [ -z "$JAR_FILE" ] && echo "Backend jar not found" && exit 1
           nohup java -jar "$JAR_FILE" > backend-app.log 2>&1 &
           echo $! > backend.pid
+
+      # --- Wait/Verification: Essential steps to ensure both servers are ready and data is seeded.
       - name: Wait for backend HTTP 8080
+        # This readiness check is crucial for reliability, so it's kept.
         run: |
           sudo apt-get update && sudo apt-get install -y jq netcat-openbsd || sudo apt-get install -y netcat-traditional
           echo "Waiting for TCP 8080 to open..."
+          # ... (rest of the readiness check logic remains) ...
           for i in {1..60}; do
             if nc -z localhost 8080; then echo "Port 8080 open"; break; fi
             echo "Port not open yet ($i)"; sleep 2;
@@ -149,24 +166,31 @@ jobs:
           done
           if [ $READY -ne 1 ]; then echo "Backend readiness check failed"; tail -n 400 backend-app.log || true; exit 1; fi
       - name: Verify seed data (requests >= 26)
+        # Essential verification before running UI tests.
         run: |
           COUNT=$(curl -s http://localhost:8080/api/requests/all | jq 'length') || COUNT=0
           echo "Seeded requests count: $COUNT"
           if [ "$COUNT" -lt 26 ]; then echo "Insufficient seeded requests (<26)."; exit 1; fi
       - name: Wait for Angular dev server 4200
+        # Essential wait for the UI to be reachable.
         run: |
           for i in {1..40}; do
             if curl -s http://localhost:4200/ >/dev/null 2>&1; then echo "Frontend up"; exit 0; fi
             echo "Waiting frontend dev server... ($i)"; sleep 3;
           done
           echo "Frontend dev server did not start"; tail -n 200 frontend/angular.log || true; exit 1
+
       - name: Install Chrome for Selenium tests
+        # Installation is required for the UI tests.
         run: |
           sudo apt-get update
           sudo apt-get install -y google-chrome-stable || sudo apt-get install -y chromium-browser
       - name: Run UI Selenium/Cucumber tests (reuse MySQL) headless
+        # The main test run command.
         working-directory: testscripts
         run: mvn -q --no-transfer-progress test -Dsurefire.printSummary=true -DbaseUrl=http://localhost:4200 -Dheadless=true
+
+      # --- Artifact Uploads & Cleanup: Essential for debugging and pipeline completion.
       - name: Upload backend jar artifact
         if: success()
         uses: actions/upload-artifact@v4
@@ -204,6 +228,8 @@ jobs:
         run: |
           [ -f angular.pid ] && kill $(cat angular.pid) || true
           [ -f backend.pid ] && kill $(cat backend.pid) || true
+
+  ---
 
   summary:
     runs-on: ubuntu-latest
