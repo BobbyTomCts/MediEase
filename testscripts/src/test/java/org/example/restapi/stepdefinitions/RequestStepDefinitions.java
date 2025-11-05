@@ -9,6 +9,7 @@ import org.example.restapi.models.Request;
 import org.example.restapi.models.User;
 import org.example.restapi.services.RequestService;
 import org.example.restapi.services.UserService;
+import org.example.restapi.utils.TokenManager;
 import org.testng.Assert;
 
 import java.util.List;
@@ -21,13 +22,17 @@ public class RequestStepDefinitions {
     private Response response;
     private Long createdRequestId;
     private final UserService userService;
+    private final TokenManager tokenManager;
     private static final Long TEST_EMPLOYEE_ID = 1L;
     private static final Long TEST_HOSPITAL_ID = 42L;
     private String adminToken;
+    private String userToken;
     Map<String,String> map;
+    
     public RequestStepDefinitions() {
         this.requestService = new RequestService();
         this.userService = new UserService();
+        this.tokenManager = TokenManager.getInstance();
     }
 
 
@@ -40,11 +45,12 @@ public class RequestStepDefinitions {
     }
     @Given("an employee creates a new request with details:")
     public void anEmployeeCreatesANewRequestWithDetails(DataTable data) {
+        userToken = tokenManager.getUserToken();
         map = data.asMaps(String.class,String.class).get(0);
         Long empId = Long.parseLong(map.get("empId"));
         Double amount = Double.parseDouble(map.get("amount"));
         Long hospitalId = Long.parseLong(map.get("hospitalId"));
-        response = requestService.createRequest(empId, amount, hospitalId);
+        response = requestService.createRequest(empId, amount, hospitalId, userToken);
         System.out.println(response.then().log().all());
 
         if (response.getStatusCode() == 200) {
@@ -87,24 +93,28 @@ public class RequestStepDefinitions {
     // Retrieval/Filtering Steps
     @When("the user gets all requests")
     public void theUserGetsAllRequests() {
-        response = requestService.getAllRequests();
+        userToken = tokenManager.getUserToken();
+        response = requestService.getAllRequests(userToken);
         System.out.println(response.then().log().all());
     }
 
     @When("the user gets requests for employee ID {long}")
     public void theUserGetsRequestsForEmployeeID(long empId) {
-        response = requestService.getRequestsByEmpId(empId);
+        userToken = tokenManager.getUserToken();
+        response = requestService.getRequestsByEmpId(empId, userToken);
         System.out.println(response.then().log().all());
     }
 
     @When("the user gets requests filtered by status {string}")
     public void theUserGetsRequestsFilteredByStatus(String status) {
-        response = requestService.getRequestsByStatus(status);
+        userToken = tokenManager.getUserToken();
+        response = requestService.getRequestsByStatus(status, userToken);
     }
 
     @When("the user gets requests filtered by status {string} and date range from {string} to {string}")
     public void theUserGetsRequestsFilteredByStatusAndDateRange(String status, String startDateStr, String endDateStr) {
-        response = requestService.getFilteredRequests(status, startDateStr, endDateStr);
+        userToken = tokenManager.getUserToken();
+        response = requestService.getFilteredRequests(status, startDateStr, endDateStr, userToken);
     }
 
     @Then("the response list is not empty")

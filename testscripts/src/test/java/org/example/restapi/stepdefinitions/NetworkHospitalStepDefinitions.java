@@ -5,6 +5,7 @@ import io.cucumber.java.en.When;
 import io.restassured.response.Response;
 import org.example.restapi.models.NetworkHospital;
 import org.example.restapi.services.NetworkHospitalService;
+import org.example.restapi.utils.TokenManager;
 import org.testng.Assert;
 
 import java.util.List;
@@ -13,7 +14,9 @@ import java.util.stream.Collectors;
 public class NetworkHospitalStepDefinitions {
 
     private final NetworkHospitalService hospitalService;
+    private final TokenManager tokenManager;
     private Response response;
+    private String currentToken;
 
     private static final String TEST_CITY = "Chennai";
     private static final String TEST_STATE = "Tamil Nadu";
@@ -21,26 +24,31 @@ public class NetworkHospitalStepDefinitions {
 
     public NetworkHospitalStepDefinitions() {
         this.hospitalService = new NetworkHospitalService();
+        this.tokenManager = TokenManager.getInstance();
     }
 
     @When("the user retrieves all network hospitals")
     public void theUserRetrievesAllNetworkHospitals() {
-        response = hospitalService.getAllHospitals();
+        currentToken = tokenManager.getUserToken();
+        response = hospitalService.getAllHospitals(currentToken);
     }
 
     @When("the user searches for hospitals by city {string}")
     public void theUserSearchesForHospitalsByCity(String city) {
-        response = hospitalService.getHospitalsByCity(city);
+        currentToken = tokenManager.getUserToken();
+        response = hospitalService.getHospitalsByCity(city, currentToken);
     }
 
     @When("the user searches for hospitals by state {string}")
     public void theUserSearchesForHospitalsByState(String state) {
-        response = hospitalService.getHospitalsByState(state);
+        currentToken = tokenManager.getUserToken();
+        response = hospitalService.getHospitalsByState(state, currentToken);
     }
 
     @When("the user retrieves the hospital with ID {long}")
     public void theUserRetrievesTheHospitalWithID(long id) {
-        response = hospitalService.getHospitalById(id);
+        currentToken = tokenManager.getUserToken();
+        response = hospitalService.getHospitalById(id, currentToken);
     }
 
     @Then("the hospital response status code is {int}")

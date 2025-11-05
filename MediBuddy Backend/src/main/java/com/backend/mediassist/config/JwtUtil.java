@@ -52,7 +52,7 @@ public class JwtUtil extends OncePerRequestFilter {
         String path = request.getRequestURI();
         
         // Skip JWT validation for login and register endpoints
-        if (path.contains("/login") || path.contains("/register") || path.contains("/swagger") || path.contains("/api-docs")) {
+        if (path.contains("/login") || path.contains("/register")) {
             filterChain.doFilter(request, response);
             return;
         }

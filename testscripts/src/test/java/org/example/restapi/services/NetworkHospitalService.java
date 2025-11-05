@@ -12,9 +12,17 @@ public class NetworkHospitalService extends BaseTest {
         return doGet(HOSPITALS_BASE_PATH + "/all");
     }
 
+    public Response getAllHospitals(String token) {
+        return doGet(HOSPITALS_BASE_PATH + "/all", token);
+    }
+
 //  GET /api/hospitals/city/{city}
     public Response getHospitalsByCity(String city) {
         return doGet(HOSPITALS_BASE_PATH + "/city/" + city);
+    }
+
+    public Response getHospitalsByCity(String city, String token) {
+        return doGet(HOSPITALS_BASE_PATH + "/city/" + city, token);
     }
 
 //    GET /api/hospitals/state/{state}
@@ -22,9 +30,17 @@ public class NetworkHospitalService extends BaseTest {
         return doGet(HOSPITALS_BASE_PATH + "/state/" + state);
     }
 
+    public Response getHospitalsByState(String state, String token) {
+        return doGet(HOSPITALS_BASE_PATH + "/state/" + state, token);
+    }
+
 //    GET /api/hospitals/{id}
 
     public Response getHospitalById(Long id) {
         return doGet(HOSPITALS_BASE_PATH + "/" + id);
+    }
+
+    public Response getHospitalById(Long id, String token) {
+        return doGet(HOSPITALS_BASE_PATH + "/" + id, token);
     }
 }

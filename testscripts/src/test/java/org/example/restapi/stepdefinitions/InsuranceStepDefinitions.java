@@ -8,6 +8,7 @@ import io.restassured.response.Response;
 import org.example.restapi.models.Dependant;
 import org.example.restapi.models.Insurance;
 import org.example.restapi.services.InsuranceApiService;
+import org.example.restapi.utils.TokenManager;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -15,23 +16,30 @@ import static org.junit.Assert.assertTrue;
 
 public class InsuranceStepDefinitions {
     private InsuranceApiService insuranceApiService = new InsuranceApiService();
+    private TokenManager tokenManager = TokenManager.getInstance();
     private Response response;
     private static Long CREATED_INSURANCE_ID; // To store IDs for subsequent tests
+    private String currentToken;
 
     @Given("Employee with ID {long} has existing insurance")
     public void employeeWithIdHasExistingInsurance(Long empId) {
+        // Ensure token is available
+        currentToken = tokenManager.getUserToken();
     }
 
     @Given("A dependant with ID {long} exists for empId {long}")
     public void aDependantWithIDExistsForEmpId(Long dependantId, Long empId) {
+        currentToken = tokenManager.getUserToken();
     }
 
     @Given("A dependant with ID {long} exists and needs to be deleted")
     public void aDependantWithIDExistsAndNeedsToBeDeleted(Long dependantId) {
+        currentToken = tokenManager.getUserToken();
     }
 
     @Given("Employee with ID {long} has dependants")
     public void employeeWithIdHasMultipleDependants(Long empId) {
+        currentToken = tokenManager.getUserToken();
     }
 
     @Then("the response status code should be {int}")
@@ -42,10 +50,11 @@ public class InsuranceStepDefinitions {
     // --- Insurance Packages Steps ---
     @When("a GET request is sent to the {string}")
     public void aGETRequestIsSentTo(String endpoint) {
+        currentToken = tokenManager.getUserToken();
         if (endpoint.equals("/packages")) {
-            response = insuranceApiService.getAllPackages();
+            response = insuranceApiService.getAllPackages(currentToken);
         } else {
-            response = insuranceApiService.getDependants(Long.valueOf(endpoint.replace("/dependants/", "")));
+            response = insuranceApiService.getDependants(Long.valueOf(endpoint.replace("/dependants/", "")), currentToken);
         }
     }
 
@@ -59,7 +68,8 @@ public class InsuranceStepDefinitions {
     // --- Create Insurance Steps ---
     @When("a POST request is sent to {string} with empId {long} and packageId {long}")
     public void aPOSTRequestIsSentToWithEmpIdAndPackageId(String endpoint, Long empId, Long packageId) {
-        response = insuranceApiService.createInsurance(empId, packageId);
+        currentToken = tokenManager.getUserToken();
+        response = insuranceApiService.createInsurance(empId, packageId, currentToken);
     }
 
     @And("the response contains an Insurance object for empId {long}")
@@ -83,7 +93,8 @@ public class InsuranceStepDefinitions {
     // --- Get Insurance By EmpId Steps ---
     @When("a GET request is sent to {long}")
     public void aGETRequestIsSentToEmpId(Long empId) {
-        response = insuranceApiService.getDependants(empId);
+        currentToken = tokenManager.getUserToken();
+        response = insuranceApiService.getDependants(empId, currentToken);
 //        response = insuranceApiService.getDependants(Long.valueOf(endpoint.replace("/dependants/", "")));
         System.out.println(response.then().extract().asString());
     }
@@ -99,7 +110,8 @@ public class InsuranceStepDefinitions {
     // --- Dependant Steps ---
     @When("a POST request is sent to {string} for empId {long} with name {string}, age {int}, gender {string}, and relation {string}")
     public void aPOSTRequestIsSentToForEmpIdWithNameAgeGenderAndRelation(String endpoint, Long empId, String name, Integer age, String gender, String relation) {
-        response = insuranceApiService.addDependant(empId, name, age, gender, relation);
+        currentToken = tokenManager.getUserToken();
+        response = insuranceApiService.addDependant(empId, name, age, gender, relation, currentToken);
     }
 
     @And("the response Dependant object {string} is {string}")
@@ -123,8 +135,9 @@ public class InsuranceStepDefinitions {
 
     @When("a PUT request is sent to {string} with name {string}, age {int}, gender {string}, and relation {string}")
     public void aPUTRequestIsSentToWithDetails(String endpoint, String name, Integer age, String gender, String relation) {
+        currentToken = tokenManager.getUserToken();
         Long dependantId = Long.valueOf(endpoint.replace("/dependant/update/", ""));
-        response = insuranceApiService.updateDependant(dependantId, name, age, gender, relation);
+        response = insuranceApiService.updateDependant(dependantId, name, age, gender, relation, currentToken);
         System.out.println(response.then().extract().asString());
     }
 
@@ -138,8 +151,9 @@ public class InsuranceStepDefinitions {
 
     @When("a DELETE request is sent to {string}")
     public void aDELETERequestIsSentTo(String endpoint) {
+        currentToken = tokenManager.getUserToken();
         Long dependantId = Long.valueOf(endpoint.replace("/dependant/delete/", ""));
-        response = insuranceApiService.deleteDependant(dependantId);
+        response = insuranceApiService.deleteDependant(dependantId, currentToken);
     }
 
     @And("the response message is {string}")
