@@ -19,6 +19,8 @@ Feature: User Profile Functionality
     Then I should see the success message "Profile updated successfully!"
     And I should see the "Full Name" displayed as "CH Kavitha"
     And I should see the "Phone Number" displayed as "9988776655"
+    And the database should reflect the updated "Full Name" as "CH Kavitha"
+    And the database should reflect the updated "Phone Number" as "9988776655"
     When I refresh the page
     Then I should see the "Full Name" displayed as "CH Kavitha"
     And I should see the "Phone Number" displayed as "9988776655"
